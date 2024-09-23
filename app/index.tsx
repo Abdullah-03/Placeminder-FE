@@ -1,15 +1,17 @@
 import { Text, View } from "react-native";
+import {useAppSelector} from "@/app/hooks";
 
 export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    const locationState = useAppSelector((state) => state.locations);
+    return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+            <Text>{locationState.locations[0].name}</Text>
+        </View>
   );
 }
