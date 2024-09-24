@@ -2,8 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE,} from 'redux-persist';
+import locationsReducer from './slices/locations'
 
-const reducers = combineReducers({});
+const reducers = combineReducers({
+    locations: locationsReducer
+});
 
 const persistConfig = {
     key: 'root',
