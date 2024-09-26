@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.darana.placeminder",
+      "config": {
+        "googleMapsApiKey": "AIzaSyC-QXb1OpjIBw8R9TPkZ3Tppr2qiayn2cg"
+      }
     },
     "android": {
       "adaptiveIcon": {
