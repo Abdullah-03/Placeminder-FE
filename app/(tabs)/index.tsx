@@ -1,6 +1,6 @@
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 
-export default function Home() {
+export default function Index() {
     return (
         <SafeAreaView style={styles.container}>
             <Text>Home screen</Text>
