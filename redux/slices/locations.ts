@@ -2,7 +2,8 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface LocationInterface {
     name: string;
-    coordinates: string;
+    latitude: number;
+    longitude: number;
     radius: number;
     tasks: string[];
 }
