@@ -17,6 +17,11 @@
       "bundleIdentifier": "com.darana.placeminder",
       "config": {
         "googleMapsApiKey": "AIzaSyC-QXb1OpjIBw8R9TPkZ3Tppr2qiayn2cg"
+      },
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location"
+        ]
       }
     },
     "android": {
@@ -31,7 +36,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
