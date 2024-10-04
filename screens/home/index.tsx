@@ -1,4 +1,4 @@
-import {Pressable, SafeAreaView, Text, View} from 'react-native';
+import {Pressable, SafeAreaView, Text, useColorScheme, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "@/hooks/redux";
 import styles from './styles'
 import {useEffect, useState} from "react";
@@ -16,6 +16,7 @@ import Animated, {
     withSequence,
     withTiming
 } from "react-native-reanimated";
+import {Colors} from "@/constants/Colors";
 
 export default function Index() {
     const locations = useAppSelector(state => state.locations.locations);
@@ -28,6 +29,8 @@ export default function Index() {
 
     const animatedHorizontalPadding = useSharedValue(0)
     const animatedVerticalPadding = useSharedValue(0)
+
+    const theme = useColorScheme()
 
     const animatedStyles = useAnimatedStyle(() => ({
         flexDirection: 'row',
@@ -98,7 +101,7 @@ export default function Index() {
     }, [locations]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme === "dark" ? Colors.dark.background : Colors.light.background}]}>
             <Text
                 style={{marginVertical: 20}}>{place ? `Currently at ${place.name}` : 'Wow! a new place to explore'}</Text>
             <View style={{flex: 1}}>
@@ -116,8 +119,8 @@ export default function Index() {
                            }}
                 >
                     <Animated.View style={animatedStyles}>
-                        <FontAwesome name='plus' size={20}/>
-                        <Text>Add a new task!</Text>
+                        <FontAwesome name='plus' size={20} color={Colors.light.background} />
+                        <Text style={{color: theme === 'dark' ? Colors.dark.text : Colors.light.background}}>Add a new task!</Text>
                     </Animated.View>
                 </Pressable>
                 {(place && place.tasks.length !== 0) ? place.tasks.map(task => <Task task={task}/>) : null}
