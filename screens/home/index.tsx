@@ -1,15 +1,59 @@
-import {SafeAreaView, Text, View} from 'react-native';
-import {useAppSelector} from "@/hooks/redux";
+import {Pressable, SafeAreaView, Text, View} from 'react-native';
+import {useAppDispatch, useAppSelector} from "@/hooks/redux";
 import styles from './styles'
 import {useEffect, useState} from "react";
 import * as Location from 'expo-location';
 import {GeofencingEventType} from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import isWithinDistance from "@/utils/isWithinDistance";
+import {addTask, clearError, LocationInterface} from "@/redux/slices/locations";
+import Task from "@/components/task";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import CustomModal from "@/components/modal";
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withTiming
+} from "react-native-reanimated";
 
 export default function Index() {
     const locations = useAppSelector(state => state.locations.locations);
-    const [place, setPlace] = useState<string>();
+    let taskError = useAppSelector(state => state.locations.error);
+    const dispatch = useAppDispatch();
+
+    const [place, setPlace] = useState<LocationInterface | null>();
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [task, setTask] = useState<string>('');
+
+    const animatedHorizontalPadding = useSharedValue(0)
+    const animatedVerticalPadding = useSharedValue(0)
+
+    const animatedStyles = useAnimatedStyle(() => ({
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingHorizontal: 90 + animatedHorizontalPadding.value,
+        paddingVertical: 30 + animatedVerticalPadding.value,
+        minWidth: '100%',
+    }))
+
+    function saveTask() {
+        if (task === '' || place === null)
+            return
+
+        dispatch(addTask({
+            // @ts-ignore
+            locationName: place.name,
+            taskName: task
+        }))
+    }
+
+    useEffect(() => {
+        if (isTaskModalOpen) {
+            setTask('')
+            dispatch(clearError())
+        }
+    }, [isTaskModalOpen, dispatch]);
 
     useEffect(() => {
         const requestPermissions = async () => {
@@ -38,14 +82,14 @@ export default function Index() {
                     let currentLocation = await Location.getCurrentPositionAsync({});
                     for (const location of locations) {
                         if (isWithinDistance(location.latitude, location.longitude, currentLocation.coords.latitude, currentLocation.coords.longitude, location.radius)) {
-                            setPlace(location.name);
+                            setPlace(location);
                             return;
                         }
                     }
-                    setPlace('');
+                    setPlace(null);
                 }
 
-                getPlace().catch(()=> console.log('Failed to get location'));
+                getPlace().catch(() => console.log('Failed to get location'));
             })
         })
             .catch(() =>
@@ -55,10 +99,38 @@ export default function Index() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={{marginVertical: 20}}>{place ? `Currently at ${place}` : 'Wow! a new place to explore'}</Text>
+            <Text
+                style={{marginVertical: 20}}>{place ? `Currently at ${place.name}` : 'Wow! a new place to explore'}</Text>
             <View style={{flex: 1}}>
-                {locations.map(l => <Text>{l.name}</Text>)}
+                <Pressable style={{
+                    width: '90%',
+                    backgroundColor: '#E4EAF2',
+                    borderRadius: 10,
+                    marginBottom: 10,
+                }}
+                           onPress={() => {
+                               setIsTaskModalOpen(true)
+                               animatedHorizontalPadding.value = withSequence(
+                                   withTiming(10),
+                                   withTiming(0),
+                               )
+                               animatedVerticalPadding.value = withSequence(
+                                   withTiming(4),
+                                   withTiming(0),
+                               )
+                           }}
+                >
+                    <Animated.View style={animatedStyles}>
+                        <FontAwesome name='plus' size={20}/>
+                        <Text>Add a new task!</Text>
+                    </Animated.View>
+                </Pressable>
+                {(place && place.tasks.length !== 0) ? place.tasks.map(task => <Task task={task}/>) : null}
+
             </View>
+            <CustomModal isModalOpen={isTaskModalOpen} setIsModalOpen={setIsTaskModalOpen} label={task}
+                         setLabel={setTask} error={taskError} onPress={saveTask} title='Add a task'/>
+
         </SafeAreaView>
     );
 }
