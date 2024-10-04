@@ -6,6 +6,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fff',
+    },
+    newTask: {
+        width: '90%',
+        backgroundColor: '#E4EAF2',
+        borderRadius: 10,
+        marginBottom: 10,
     }
 });
 

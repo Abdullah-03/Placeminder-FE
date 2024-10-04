@@ -102,12 +102,7 @@ export default function Index() {
             <Text
                 style={{marginVertical: 20}}>{place ? `Currently at ${place.name}` : 'Wow! a new place to explore'}</Text>
             <View style={{flex: 1}}>
-                <Pressable style={{
-                    width: '90%',
-                    backgroundColor: '#E4EAF2',
-                    borderRadius: 10,
-                    marginBottom: 10,
-                }}
+                <Pressable style={styles.newTask}
                            onPress={() => {
                                setIsTaskModalOpen(true)
                                animatedHorizontalPadding.value = withSequence(
