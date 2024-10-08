@@ -19,7 +19,6 @@ export default function AddLocationScreen() {
     const [label, setLabel] = useState('');
     const [saving, setSaving] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string>();
-
     useEffect(() => {
         (async () => {
             let {status} = await Location.requestForegroundPermissionsAsync();
@@ -107,7 +106,7 @@ export default function AddLocationScreen() {
                             <TextInput value={String(radius)} inputMode='numeric'
                                        onChangeText={text => setRadius(Number(text))}/><Text>meters</Text>
                         </View>
-                        <Pressable style={styles.radiusBarIconContainer} onPress={() => setRadius(radius + 500)}>
+                        <Pressable style={styles.radiusBarIconContainer} onPress={() => setRadius(radius + 50)}>
                             <FontAwesome name='plus' size={28} color='black'/>
                         </Pressable>
                     </View>
