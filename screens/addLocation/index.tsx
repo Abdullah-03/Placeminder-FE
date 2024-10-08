@@ -112,7 +112,8 @@ export default function AddLocationScreen() {
                     </View>
                 </View>
                 <CustomModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} label={label}
-                             onPress={saveLocation} error={locationError} setLabel={setLabel}/>
+                             onPress={saveLocation} error={locationError} setLabel={setLabel}
+                             title='Give this place a name'/>
             </SafeAreaView>
             : !errorMsg ?
                 <SafeAreaView style={styles.center}>

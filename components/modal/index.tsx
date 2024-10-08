@@ -5,6 +5,7 @@ import React from "react";
 interface CustomModalProps {
     isModalOpen: boolean,
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    title: string,
     label: string,
     setLabel: React.Dispatch<React.SetStateAction<string>>,
     error: string | null,
@@ -14,6 +15,7 @@ interface CustomModalProps {
 export default function CustomModal({
                                         isModalOpen,
                                         setIsModalOpen,
+                                        title,
                                         label,
                                         setLabel,
                                         error,
@@ -25,7 +27,7 @@ export default function CustomModal({
             <TouchableOpacity style={{width: "100%", height: "100%"}} onPress={() => setIsModalOpen(false)}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Give this place a label</Text>
+                        <Text style={styles.modalText}>{title}</Text>
                         <TextInput value={label} placeholder='label name' onChangeText={text => setLabel(text)}
                                    style={styles.labelInput}/>
                         {error ? <Text style={styles.errorText}>{error}</Text> : null}
