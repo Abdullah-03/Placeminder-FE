@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import {Colors} from "@/constants/Colors";
 
 const styles = StyleSheet.create({
     container: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     },
     radiusBarBottomContainer: {
         paddingVertical: '3%',
-        backgroundColor: '#FF6500',
+        backgroundColor: Colors.blue,
         display: 'flex',
         flexDirection: 'row',
         borderRadius: 10
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     radiusBarTopContainer: {
         width: '60%',
         marginHorizontal: 'auto',
-        backgroundColor: '#FF6500',
+        backgroundColor: Colors.blue,
         display: 'flex',
         justifyContent: "center",
         alignItems: 'center',

@@ -6,7 +6,7 @@ import {store} from "@/redux/store";
 export default function TabLayout() {
     return (
         <Provider store={store}>
-            <Tabs screenOptions={{tabBarActiveTintColor: 'blue'}}>
+            <Tabs screenOptions={{tabBarActiveTintColor: '#2b7b8c',}}>
                 <Tabs.Screen
                     name="index"
                     options={{
