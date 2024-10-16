@@ -10,11 +10,13 @@ export interface LocationInterface {
 
 export interface LocationsInterface {
     locations: LocationInterface[];
+    currentLocation?: LocationInterface;
     error: string | null;
 }
 
 const initialState: LocationsInterface = {
     locations: [],
+    currentLocation: undefined,
     error: null,
 };
 
@@ -67,6 +69,10 @@ export const locationsSlice = createSlice({
                 state.error = null;
             }
         },
+        setLocation: (state, action: PayloadAction<string | undefined>) => {
+            const loc = state.locations.find(l => l.name === action.payload);
+            loc ? state.currentLocation = loc : state.currentLocation = undefined;
+        },
 
         addTask: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {
             const [locationIndex, taskIndex] = findTask(state.locations, action.payload.locationName, action.payload.taskName);
@@ -111,6 +117,7 @@ export const locationsSlice = createSlice({
 
 export const {
     addLocation,
+    setLocation,
     removeLocation,
     updateLocation,
     addTask,

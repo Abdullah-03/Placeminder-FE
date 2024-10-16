@@ -2,11 +2,7 @@ import {Pressable, SafeAreaView, Text, useColorScheme, View} from 'react-native'
 import {useAppDispatch, useAppSelector} from "@/hooks/redux";
 import styles from './styles'
 import {useEffect, useState} from "react";
-import * as Location from 'expo-location';
-import {GeofencingEventType} from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
-import isWithinDistance from "@/utils/isWithinDistance";
-import {addTask, clearError, LocationInterface} from "@/redux/slices/locations";
+import {addTask, clearError} from "@/redux/slices/locations";
 import Task from "@/components/task";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import CustomModal from "@/components/modal";
@@ -17,13 +13,14 @@ import Animated, {
     withTiming
 } from "react-native-reanimated";
 import {Colors} from "@/constants/Colors";
+import * as Location from "expo-location";
 
 export default function Index() {
     const locations = useAppSelector(state => state.locations.locations);
     let taskError = useAppSelector(state => state.locations.error);
     const dispatch = useAppDispatch();
 
-    const [place, setPlace] = useState<LocationInterface | null>();
+    const place= useAppSelector(state => state.locations.currentLocation);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [task, setTask] = useState<string>('');
 
@@ -41,11 +38,10 @@ export default function Index() {
     }))
 
     function saveTask() {
-        if (task === '' || place === null)
+        if (task === '' || place === undefined)
             return
 
         dispatch(addTask({
-            // @ts-ignore
             locationName: place.name,
             taskName: task
         }))
@@ -59,45 +55,8 @@ export default function Index() {
     }, [isTaskModalOpen, dispatch]);
 
     useEffect(() => {
-        const requestPermissions = async () => {
-            const {status: foregroundStatus} = await Location.requestForegroundPermissionsAsync();
-            if (foregroundStatus === 'granted') {
-                const {status: backgroundStatus} = await Location.requestBackgroundPermissionsAsync();
-                if (backgroundStatus === 'granted') {
-                    await Location.startGeofencingAsync('Geofencing', locations)
-                }
-            }
-        }
-        requestPermissions().then(() => {
-            // @ts-ignore
-            TaskManager.defineTask('Geofencing', ({data: {eventType, region}, error}) => {
-                if (error) {
-                    console.log(error.message);
-                    return;
-                }
-                if (eventType === GeofencingEventType.Enter) {
-                    console.log("You've entered region:", region);
-                } else if (eventType === GeofencingEventType.Exit) {
-                    console.log("You've left region:", region);
-                }
-
-                async function getPlace() {
-                    let currentLocation = await Location.getCurrentPositionAsync({});
-                    for (const location of locations) {
-                        if (isWithinDistance(location.latitude, location.longitude, currentLocation.coords.latitude, currentLocation.coords.longitude, location.radius)) {
-                            setPlace(location);
-                            return;
-                        }
-                    }
-                    setPlace(null);
-                }
-
-                getPlace().catch(() => console.log('Failed to get location'));
-            })
-        })
-            .catch(() =>
-                console.log('Grant permissions to proceed')
-            )
+        Location.startGeofencingAsync('Geofencing', locations.map(l => ({identifier: l.name, ...l})))
+            .catch(() => console.log('geofence failed'))
     }, [locations]);
 
     return (
