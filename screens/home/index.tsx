@@ -13,12 +13,14 @@ import Animated, {
     withTiming
 } from "react-native-reanimated";
 import {Colors} from "@/constants/Colors";
+import * as Location from "expo-location";
 
 export default function Index() {
     let taskError = useAppSelector(state => state.locations.error);
     const dispatch = useAppDispatch();
 
-    const currentLocation= useAppSelector(state => state.locations.currentLocation);
+    const locations = useAppSelector(state => state.locations.locations)
+    const currentLocationIndex= useAppSelector(state => state.locations.currentLocationIndex);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [task, setTask] = useState<string>('');
 
@@ -36,11 +38,11 @@ export default function Index() {
     }))
 
     function saveTask() {
-        if (task === '' || currentLocation === undefined)
+        if (task === '' || currentLocationIndex === -1)
             return
 
         dispatch(addTask({
-            locationName: currentLocation.name,
+            locationName: locations[currentLocationIndex].name,
             taskName: task
         }))
     }
@@ -52,10 +54,15 @@ export default function Index() {
         }
     }, [isTaskModalOpen, dispatch]);
 
+    useEffect(() => {
+        Location.startGeofencingAsync('Geofencing', locations.map(l => ({identifier: l.name, ...l})))
+            .catch(() => console.log('geofence failed'))
+    }, [locations]);
+
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme === "dark" ? Colors.dark.background : Colors.light.background}]}>
             <Text
-                style={{marginVertical: 20}}>{currentLocation ? `Currently at ${currentLocation.name}` : 'Wow! a new place to explore'}</Text>
+                style={{marginVertical: 20}}>{currentLocationIndex !== -1 ? `Currently at ${locations[currentLocationIndex].name}` : 'Wow! a new place to explore'}</Text>
             <View style={{flex: 1}}>
                 <Pressable style={styles.newTask}
                            onPress={() => {
@@ -75,7 +82,7 @@ export default function Index() {
                         <Text style={{color: theme === 'dark' ? Colors.dark.text : Colors.light.background}}>Add a new task!</Text>
                     </Animated.View>
                 </Pressable>
-                {(currentLocation && currentLocation.tasks.length !== 0) ? currentLocation.tasks.map(task => <Task task={task} locationName={currentLocation.name}/>) : null}
+                {(currentLocationIndex !== -1 && locations[currentLocationIndex].tasks.length !== 0) ? locations[currentLocationIndex].tasks.map(task => <Task task={task} locationName={locations[currentLocationIndex].name}/>) : null}
 
             </View>
             <CustomModal isModalOpen={isTaskModalOpen} setIsModalOpen={setIsTaskModalOpen} label={task}

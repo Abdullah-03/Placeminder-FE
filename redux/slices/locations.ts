@@ -15,13 +15,13 @@ export interface LocationInterface {
 
 export interface LocationsInterface {
     locations: LocationInterface[];
-    currentLocation?: LocationInterface;
+    currentLocationIndex: number;
     error: string | null;
 }
 
 const initialState: LocationsInterface = {
     locations: [],
-    currentLocation: undefined,
+    currentLocationIndex: -1,
     error: null,
 };
 
@@ -75,8 +75,8 @@ export const locationsSlice = createSlice({
             }
         },
         setLocation: (state, action: PayloadAction<string | undefined>) => {
-            const loc = state.locations.find(l => l.name === action.payload);
-            loc ? state.currentLocation = loc : state.currentLocation = undefined;
+            const currentLocationIndex = state.locations.findIndex(l => l.name === action.payload);
+            state.currentLocationIndex = currentLocationIndex;
         },
 
         addTask: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {
@@ -94,9 +94,7 @@ export const locationsSlice = createSlice({
             const [locationIndex, taskIndex] = findTask(state.locations, action.payload.locationName, action.payload.taskName);
             if (taskIndex === null)
                 return
-            // @ts-ignore
-            state.currentLocation.tasks[taskIndex].isCompleted = !state.currentLocation.tasks[taskIndex].isCompleted
-            state.locations[locationIndex].tasks[taskIndex].isCompleted = !state.locations[locationIndex].tasks[taskIndex].isCompleted ;
+            state.locations[locationIndex].tasks[taskIndex].isCompleted = !state.locations[locationIndex].tasks[taskIndex].isCompleted;
             state.error = null;
         },
         removeTask: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {

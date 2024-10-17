@@ -5,7 +5,6 @@ import {GeofencingEventType} from "expo-location";
 import {store} from '@/redux/store'
 import {setLocation} from "@/redux/slices/locations";
 import isWithinDistance from "@/utils/isWithinDistance";
-import {useEffect} from "react";
 
 const requestPermissions = async () => {
     const {status: foregroundStatus} = await Location.requestForegroundPermissionsAsync();
@@ -47,13 +46,6 @@ requestPermissions()
 
 
 export default function Layout() {
-    const locations = store.getState().locations.locations;
-
-    useEffect(() => {
-        Location.startGeofencingAsync('Geofencing', locations.map(l => ({identifier: l.name, ...l})))
-            .catch(() => console.log('geofence failed'))
-    }, [locations]);
-
     return (
         <Stack>
             <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
