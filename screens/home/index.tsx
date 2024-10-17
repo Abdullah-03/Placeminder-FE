@@ -16,11 +16,11 @@ import {Colors} from "@/constants/Colors";
 import * as Location from "expo-location";
 
 export default function Index() {
-    const locations = useAppSelector(state => state.locations.locations);
     let taskError = useAppSelector(state => state.locations.error);
     const dispatch = useAppDispatch();
 
-    const place= useAppSelector(state => state.locations.currentLocation);
+    const locations = useAppSelector(state => state.locations.locations)
+    const currentLocationIndex= useAppSelector(state => state.locations.currentLocationIndex);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [task, setTask] = useState<string>('');
 
@@ -38,11 +38,11 @@ export default function Index() {
     }))
 
     function saveTask() {
-        if (task === '' || place === undefined)
+        if (task === '' || currentLocationIndex === -1)
             return
 
         dispatch(addTask({
-            locationName: place.name,
+            locationName: locations[currentLocationIndex].name,
             taskName: task
         }))
     }
@@ -62,7 +62,7 @@ export default function Index() {
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme === "dark" ? Colors.dark.background : Colors.light.background}]}>
             <Text
-                style={{marginVertical: 20}}>{place ? `Currently at ${place.name}` : 'Wow! a new place to explore'}</Text>
+                style={{marginVertical: 20}}>{currentLocationIndex !== -1 ? `Currently at ${locations[currentLocationIndex].name}` : 'Wow! a new place to explore'}</Text>
             <View style={{flex: 1}}>
                 <Pressable style={styles.newTask}
                            onPress={() => {
@@ -82,7 +82,7 @@ export default function Index() {
                         <Text style={{color: theme === 'dark' ? Colors.dark.text : Colors.light.background}}>Add a new task!</Text>
                     </Animated.View>
                 </Pressable>
-                {(place && place.tasks.length !== 0) ? place.tasks.map(task => <Task task={task}/>) : null}
+                {(currentLocationIndex !== -1 && locations[currentLocationIndex].tasks.length !== 0) ? locations[currentLocationIndex].tasks.map(task => <Task task={task} locationName={locations[currentLocationIndex].name}/>) : null}
 
             </View>
             <CustomModal isModalOpen={isTaskModalOpen} setIsModalOpen={setIsTaskModalOpen} label={task}
