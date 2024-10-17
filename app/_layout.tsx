@@ -5,6 +5,7 @@ import {GeofencingEventType} from "expo-location";
 import {store} from '@/redux/store'
 import {setLocation} from "@/redux/slices/locations";
 import isWithinDistance from "@/utils/isWithinDistance";
+import {Provider} from "react-redux";
 
 const requestPermissions = async () => {
     const {status: foregroundStatus} = await Location.requestForegroundPermissionsAsync();
@@ -25,18 +26,17 @@ TaskManager.defineTask('Geofencing', ({data: {eventType, region}, error}) => {
     if (eventType === GeofencingEventType.Enter) {
         console.log("You've entered region:", region);
         store.dispatch(setLocation(region.identifier))
-    }
-    else if (eventType === GeofencingEventType.Exit) {
-         console.log("You've left region:", region);
-         const locations = store.getState().locations.locations;
-         Location.getCurrentPositionAsync().then((currentLocation) => {
-             for (const location of locations) {
-                 if (isWithinDistance(location.latitude, location.longitude, currentLocation.coords.latitude, currentLocation.coords.longitude, location.radius)) {
-                     return;
-                 }
-             }
-             store.dispatch(setLocation(undefined));
-         })
+    } else if (eventType === GeofencingEventType.Exit) {
+        console.log("You've left region:", region);
+        const locations = store.getState().locations.locations;
+        Location.getCurrentPositionAsync().then((currentLocation) => {
+            for (const location of locations) {
+                if (isWithinDistance(location.latitude, location.longitude, currentLocation.coords.latitude, currentLocation.coords.longitude, location.radius)) {
+                    return;
+                }
+            }
+            store.dispatch(setLocation(undefined));
+        })
     }
 })
 
@@ -47,8 +47,11 @@ requestPermissions()
 
 export default function Layout() {
     return (
-        <Stack>
-            <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-        </Stack>
+        <Provider store={store}>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                <Stack.Screen name="locations" options={{headerShown: false}}/>
+            </Stack>
+        </Provider>
     );
 }
