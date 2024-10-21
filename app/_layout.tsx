@@ -51,6 +51,7 @@ export default function Layout() {
             <Stack>
                 <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
                 <Stack.Screen name="locations" options={{headerShown: false}}/>
+                <Stack.Screen name="tasks" options={{headerShown: false}}/>
             </Stack>
         </Provider>
     );

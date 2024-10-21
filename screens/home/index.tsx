@@ -56,7 +56,7 @@ export default function Index() {
 
     useEffect(() => {
         Location.startGeofencingAsync('Geofencing', locations.map(l => ({identifier: l.name, ...l})))
-            .catch(() => console.log('geofence failed'))
+            .catch((error) => console.log('geofence failed: ', error))
     }, [locations]);
 
     return (

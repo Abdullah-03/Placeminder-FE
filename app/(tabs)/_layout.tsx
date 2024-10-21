@@ -17,8 +17,8 @@ export default function TabLayout() {
                 options={{
                     title: 'Add Location',
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="plus" color={color}/>,
-                    headerShown: false
-
+                    headerShown: false,
+                    unmountOnBlur: true
                 }}
             />
             <Tabs.Screen
