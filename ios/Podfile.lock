@@ -1589,12 +1589,12 @@ SPEC CHECKSUMS:
   EXSplashScreen: 17a656c08a0095be15b620c52e61dfdb665863d2
   EXTaskManager: 9c3520305c3aa1b4a12a7c6d1e3f85f2779c06e9
   FBLazyVector: ac12dc084d1c8ec4cc4d7b3cf1b0ebda6dab85af
-  fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
-  glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
+  fmt: 8083860262b879fc92bca720969c91bdb88ada93
+  glog: 77f46f3d5c779b34a09b51a92fa9e0fcab64df1c
   Google-Maps-iOS-Utils: f77eab4c4326d7e6a277f8e23a0232402731913a
   GoogleMaps: 032f676450ba0779bd8ce16840690915f84e57ac
-  hermes-engine: 8c1577f3fdb849cbe7729c2e7b5abc4b845e88f8
-  RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
+  hermes-engine: e52d9706e7fd6078e529d8ada1af7b95946c4ce6
+  RCT-Folly: 36944e180e3143948e1c8b0c5eade65a3dd45142
   RCTDeprecation: 3afceddffa65aee666dafd6f0116f1d975db1584
   RCTRequired: ec1239bc9d8bf63e10fb92bd8b26171a9258e0c1
   RCTTypeSafety: f5ecbc86c5c5fa163c05acb7a1c5012e15b5f994

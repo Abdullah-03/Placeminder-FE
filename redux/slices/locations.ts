@@ -1,19 +1,27 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-interface LocationInterface {
+export interface TaskInterface {
     name: string;
-    coordinates: string;
+    isCompleted: boolean;
+}
+
+export interface LocationInterface {
+    name: string;
+    latitude: number;
+    longitude: number;
     radius: number;
-    tasks: string[];
+    tasks: TaskInterface[];
 }
 
 export interface LocationsInterface {
     locations: LocationInterface[];
+    currentLocationIndex: number;
     error: string | null;
 }
 
 const initialState: LocationsInterface = {
     locations: [],
+    currentLocationIndex: -1,
     error: null,
 };
 
@@ -26,7 +34,7 @@ function findTask(locations: LocationInterface[], locationName: string, taskName
     const locationIndex = locations.findIndex(location => location.name === locationName);
     if (locationIndex === -1) return [-1, null, 'Location does not exist'];
 
-    const taskIndex = locations[locationIndex].tasks.indexOf(taskName);
+    const taskIndex = locations[locationIndex].tasks.findIndex(task => task.name === taskName);
     if (taskIndex === -1) return [locationIndex, -1, 'Task does not exist'];
 
     return [locationIndex, taskIndex, null];
@@ -66,6 +74,10 @@ export const locationsSlice = createSlice({
                 state.error = null;
             }
         },
+        setLocation: (state, action: PayloadAction<string | undefined>) => {
+            const currentLocationIndex = state.locations.findIndex(l => l.name === action.payload);
+            state.currentLocationIndex = currentLocationIndex;
+        },
 
         addTask: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {
             const [locationIndex, taskIndex] = findTask(state.locations, action.payload.locationName, action.payload.taskName);
@@ -74,9 +86,16 @@ export const locationsSlice = createSlice({
             } else if (taskIndex !== -1) {
                 state.error = 'Task already exists';
             } else {
-                state.locations[locationIndex].tasks.push(action.payload.taskName);
+                state.locations[locationIndex].tasks.push({name: action.payload.taskName, isCompleted: false});
                 state.error = null;
             }
+        },
+        toggleTaskCompletion: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {
+            const [locationIndex, taskIndex] = findTask(state.locations, action.payload.locationName, action.payload.taskName);
+            if (taskIndex === null)
+                return
+            state.locations[locationIndex].tasks[taskIndex].isCompleted = !state.locations[locationIndex].tasks[taskIndex].isCompleted;
+            state.error = null;
         },
         removeTask: (state, action: PayloadAction<{ locationName: string; taskName: string }>) => {
             const [locationIndex, taskIndex, error] = findTask(state.locations, action.payload.locationName, action.payload.taskName);
@@ -110,11 +129,13 @@ export const locationsSlice = createSlice({
 
 export const {
     addLocation,
+    setLocation,
     removeLocation,
     updateLocation,
     addTask,
     removeTask,
     updateTask,
-    clearError
+    clearError,
+    toggleTaskCompletion
 } = locationsSlice.actions;
 export default locationsSlice.reducer;
