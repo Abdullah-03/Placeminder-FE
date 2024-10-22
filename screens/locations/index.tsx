@@ -1,4 +1,4 @@
-import {SafeAreaView} from "react-native";
+import {SafeAreaView, Text} from "react-native";
 import {useAppSelector} from "@/hooks/redux";
 import Card from "@/components/card";
 import styles from "./styles";
@@ -8,7 +8,7 @@ export default function Locations() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {locations.length > 0 ? locations.map(location => <Card title={location.name} />) : 'No locations yet'}
+            {locations.length > 0 ? locations.map(location => <Card title={location.name} />) : <Text>'No locations yet'</Text>}
         </SafeAreaView>
     )
 };
