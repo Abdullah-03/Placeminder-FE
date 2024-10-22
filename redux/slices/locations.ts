@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TaskInterface {
   name: string;
@@ -101,7 +101,7 @@ export const locationsSlice = createSlice({
     },
     setLocation: (state, action: PayloadAction<string | undefined>) => {
       state.currentLocationIndex = state.locations.findIndex(
-          (l) => l.name === action.payload,
+        (l) => l.name === action.payload,
       );
     },
 
