@@ -19,9 +19,7 @@
         "googleMapsApiKey": "AIzaSyC-QXb1OpjIBw8R9TPkZ3Tppr2qiayn2cg"
       },
       "infoPlist": {
-        "UIBackgroundModes": [
-          "location"
-        ]
+        "UIBackgroundModes": ["location"]
       }
     },
     "android": {
